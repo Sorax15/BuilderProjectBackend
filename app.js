@@ -13,12 +13,11 @@ app.use(bodyParser.json());
 app.use(require('cors')());
 app.use(passport.initialize());
 
-require('./middelware/passport')(passport);
+require('./middleware/passport')(passport);
 
 /**
  * Install routing
  */
-app.use('/api', routerWeb);
-
+app.use('/api/', routerWeb);
 
 module.exports = app;

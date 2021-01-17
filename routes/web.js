@@ -20,6 +20,6 @@ router.delete('/post/:id', postController.deletePost);
  */
  router.post('/login', userController.login);
  router.post('/register', userController.register);
- router.post('/confirm', userController.confirm);
+ router.get('/confirm', userController.confirm);
 
 module.exports = router;

@@ -8,7 +8,7 @@ module.exports.login = async (req, res) => {
     const isUser = await User.findOne({ email: req.body.email });
 
     if (isUser) {
-        const passwordResult = bcrypt.compareSync(req.body.passord, isUser.passord);
+        const passwordResult = bcrypt.compareSync(req.body.password, isUser.password);
         
         if (passwordResult) {
 
@@ -19,9 +19,11 @@ module.exports.login = async (req, res) => {
 
            res.status(200).json({
                user: {
+                   id: isUser._id,
                    name: isUser.name,
                    email: isUser.email,
-                   token: `Bearer ${token}`
+                   type: isUser.type,
+                   token: token
                }
            });
 
@@ -46,16 +48,28 @@ module.exports.register = async (req, res) => {
         const user = new User({
             name: req.body.name,
             email: req.body.email,
-            password: hashSync(req.body.passord, bcrypt.genSaltSync(10))
+            type: req.body.type,
+            password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10))
         });
+
 
         try {
             await user.save();
 
+            const currentUser = await User.findOne({ email: req.body.email });
+
+            const token = jsonWebToken.sign({
+                email: currentUser.email,
+                userId: currentUser._id,
+            }, keyToken.jwt, { expiresIn: 3600 });
+
             res.status(201).json({
                 user: {
+                    id: currentUser._id,
                     name: req.body.name,
                     email: req.body.email,
+                    type: req.body.type,
+                    token: token
                 }
             });
 
