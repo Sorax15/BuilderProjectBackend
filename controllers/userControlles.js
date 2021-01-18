@@ -86,6 +86,13 @@ module.exports.register = async (req, res) => {
     }
 };
 
+module.exports.currentUser = (req, res) => {
+
+    res.status(200).json({
+       page: 'Current user'
+    });
+}
+
 module.exports.confirm = (req, res) => {
     res.status(200).json({
         page: 'Confirm'
