@@ -5,27 +5,27 @@ const User = require('../models/User');
 const keyToken = require('../config/token');
 
 module.exports.login = async (req, res) => {
-    const isUser = await User.findOne({ email: req.body.email });
+    const isUser = await User.findOne({email: req.body.email});
 
     if (isUser) {
         const passwordResult = bcrypt.compareSync(req.body.password, isUser.password);
-        
+
         if (passwordResult) {
 
-           const token = jsonWebToken.sign({
+            const token = jsonWebToken.sign({
                 email: isUser.email,
                 userId: isUser._id
-           }, keyToken.jwt, { expiresIn: 3600 });
+            }, keyToken.jwt, {expiresIn: 3600});
 
-           res.status(200).json({
-               user: {
-                   id: isUser._id,
-                   name: isUser.name,
-                   email: isUser.email,
-                   type: isUser.type,
-                   token: token
-               }
-           });
+            res.status(200).json({
+                user: {
+                    id: isUser._id,
+                    name: isUser.name,
+                    email: isUser.email,
+                    type: isUser.type,
+                    token: token
+                }
+            });
 
         } else {
             res.status(401).json({
@@ -41,7 +41,7 @@ module.exports.login = async (req, res) => {
 };
 
 module.exports.register = async (req, res) => {
-    const isUser = await User.findOne({ email: req.body.email }); 
+    const isUser = await User.findOne({email: req.body.email});
 
     if (!isUser) {
 
@@ -56,12 +56,12 @@ module.exports.register = async (req, res) => {
         try {
             await user.save();
 
-            const currentUser = await User.findOne({ email: req.body.email });
+            const currentUser = await User.findOne({email: req.body.email});
 
             const token = jsonWebToken.sign({
                 email: currentUser.email,
                 userId: currentUser._id,
-            }, keyToken.jwt, { expiresIn: 3600 });
+            }, keyToken.jwt, {expiresIn: 3600});
 
             res.status(201).json({
                 user: {
@@ -73,12 +73,12 @@ module.exports.register = async (req, res) => {
                 }
             });
 
-        } catch(error) {
+        } catch (error) {
             res.status(409).json({
                 error: 'Error you have a bad conncetion!'
             });
         }
-        
+
     } else {
         res.status(409).json({
             error: 'Email already exists!'
@@ -86,11 +86,40 @@ module.exports.register = async (req, res) => {
     }
 };
 
-module.exports.currentUser = (req, res) => {
+module.exports.currentUser = async (req, res) => {
+    const token = req.headers.authorization;
 
-    res.status(200).json({
-       page: 'Current user'
-    });
+    if (token) {
+
+        try {
+            let decode = jsonWebToken.verify(req.headers.authorization, keyToken.jwt);
+
+            const user = await User.findOne({_id: decode.userId });
+
+
+            res.status(201).json({
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    type: user.type,
+                    token: token
+                }
+            });
+
+        } catch (e) {
+            res.status(401).json({
+                error: 'Gotten invalid token'
+            });
+        }
+
+    } else {
+        res.status(401).json({
+            error: 'No token received'
+        });
+    }
+
+
 }
 
 module.exports.confirm = (req, res) => {
