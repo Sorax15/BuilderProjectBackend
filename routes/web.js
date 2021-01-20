@@ -10,10 +10,10 @@ const userController = require('../controllers/userControlles');
  * Router for Posts
  */
 router.get('/posts', passport.authenticate('jwt', { session: false }), postController.getAllPosts);
-router.get('/post/:id', postController.getPostById);
-router.put('/post/:id', postController.updatePost);
-router.post('/post/create', postController.createPost);
-router.delete('/post/:id', postController.deletePost);
+router.get('/post/:id', passport.authenticate('jwt', { session: false }), postController.getPostById);
+router.put('/post/:id', passport.authenticate('jwt', { session: false }), postController.updatePost);
+router.post('/post/create', passport.authenticate('jwt', { "session": false }), postController.createPost);
+router.delete('/post/:id', passport.authenticate('jwt', { session: false }), postController.deletePost);
 
 /**
  * Router for Users
