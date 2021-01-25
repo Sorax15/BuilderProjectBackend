@@ -1,4 +1,4 @@
-export class AuthService {
+export class UsersService {
     private readonly response;
     private readonly request;
 
