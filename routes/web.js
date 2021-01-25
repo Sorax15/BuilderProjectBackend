@@ -12,7 +12,7 @@ const userController = require('../controllers/userControlles');
 router.get('/posts', passport.authenticate('jwt', { session: false }), postController.getAllPosts);
 router.get('/post/:id', passport.authenticate('jwt', { session: false }), postController.getPostById);
 router.put('/post/:id', passport.authenticate('jwt', { session: false }), postController.updatePost);
-router.post('/post/create', passport.authenticate('jwt', { "session": false }), postController.createPost);
+router.post('/post/create', passport.authenticate('jwt', { session: false }), postController.createPost);
 router.delete('/post/:id', passport.authenticate('jwt', { session: false }), postController.deletePost);
 
 /**
