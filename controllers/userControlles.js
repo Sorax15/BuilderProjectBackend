@@ -5,6 +5,7 @@ const User = require('../models/User');
 const keyToken = require('../config/token');
 
 module.exports.login = async (req, res) => {
+
     const isUser = await User.findOne({email: req.body.email});
 
     if (isUser) {
