@@ -1,9 +1,11 @@
+import mongoose from './database/database';
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const routerWeb = require('./routes/web');
-const mongoose = require('./database/mongoDb');
 const passport = require('passport');
 const app = express();
+
 
 /**
  * Setting application
@@ -20,4 +22,4 @@ require('./middleware/passport')(passport);
  */
 app.use('/api/', routerWeb);
 
-module.exports = app;
+export default app;
